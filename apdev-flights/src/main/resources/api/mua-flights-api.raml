@@ -1,0 +1,94 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/852dd7af-75b7-477f-94d1-295e4a13cc9c/ # 
+version: v2
+
+title: MUA Flights API
+protocols:
+  - HTTP
+  - HTTPS
+types:
+  Flight: !include datatypes/Flight.raml
+
+/flights:
+  get:
+    displayName: Get All Flights
+    description: Retrieves a list of flights
+    responses:
+      '200':
+        description: Success
+        body:
+          application/json:
+            type: Flight[]
+            examples:
+              output: !include examples/flightsExample.raml
+    queryParameters:
+      code:
+        displayName: To City
+        description: Represents 3-letter destination city code
+        type: string
+        required: false
+        enum: ['SFO', 'CLE', 'LAX', 'PDX', 'PDF', 'ALL']
+        minLength: 3
+        maxLength: 3
+      airline:
+        displayName: Airline Name
+        description: Represents airline carrier name   
+        type: string
+        required: false
+        enum: [american, delta, united, all]    
+  post:
+    displayName: Add a Flight
+    description: Add/Create a new flight
+    responses:
+      '201':
+        description: Success
+        body:
+          application/json:
+            example:
+              message: New flight created successfully
+            type: object
+    body:
+      application/json:
+        type: Flight          
+        examples:
+          output: !include examples/flightExample.raml
+  '/{ID}':
+    get:
+      displayName: Get Flight by ID
+      description: Retrieve a flight based on its ID
+      responses:
+        '200':
+          description: Success
+          body:
+            application/json:
+              type: Flight
+              examples: 
+                output: !include examples/flightNoIdExample.raml
+    uriParameters:
+      ID:
+        example: '3'
+        description: Represents flights ID
+        type: string
+    delete:
+      displayName: Delete Flight by ID
+      description: Delete a flight based on its ID
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Flight deleted (but not really)
+    put:
+      displayName: Update Flight by ID
+      description: Update a flight based on its ID    
+      body:
+        application/json:
+          type: Flight
+          examples:
+            output: !include examples/flightNoIdExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Flight updated (but not really)

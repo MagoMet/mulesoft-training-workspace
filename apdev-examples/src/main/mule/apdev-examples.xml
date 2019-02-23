@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cb7a452e-02d3-4339-9fa2-f6368cfaf309" basePath="/hello">
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="4899de8c-2441-487a-ba62-f5b1c554afdb" basePath="/hello" responseTimeout="300000000">
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="0d497ade-cc07-4994-a642-5d3ef2964da0" >
+		<vm:queues >
+			<vm:queue queueName="hello.world" />
+		</vm:queues>
+	</vm:config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="aea6158b-3ca7-44b5-9c86-5d5b5b6958ab" >
+		<db:derby-connection database="american" />
+	</db:config>
+	<flow name="apdev-examplesFlow" doc:id="efe1ff47-d63a-4a2c-b3ce-78a07678d428" >
+		<http:listener doc:name="Listener" doc:id="4a4fc28f-3f14-4d1e-a4a7-5f58f6b50584" config-ref="HTTP_Listener_config" path="/{type}"/>
+		<choice doc:name="Choice" doc:id="9f0a5378-e4db-4c83-ab02-27f2bf08442e" >
+			<when expression='#[attributes.method=="POST"]'>
+				<flow-ref doc:name="Call Subflow1" doc:id="0a66aacf-cbdd-4cef-8fc2-917580b29c6c" name="subflow1"/>
+				<flow-ref doc:name="Call subflow-2" doc:id="d5e1597a-e466-485c-808a-1b4bba5b84bd" name="subflow-2" />
+				<vm:publish doc:name="Publish" doc:id="0bba3927-3761-46dd-9408-ef6fca30fcd6" config-ref="VM_Config" queueName="hello.world"/>
+			</when>
+			<otherwise >
+				<set-payload value="#[upper('hello world')]" doc:name="Set Payload" doc:id="95abdb40-306c-42b6-8a54-761fb3d558ac" />
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="dc491225-41d5-4379-a0ab-237124bf1cd6" message="#[payload]]"/>
+	</flow>
+	<sub-flow name="subflow1" doc:id="6b47f575-5fe6-4f42-80a4-74e35b98da89">
+		<set-variable value="#[message.attributes.uriParams.'type' default 'Not Maxine']" doc:name="mascotType" doc:id="25991555-9b4a-4605-ae18-fc604a2cf508" variableName="mascotType" />
+		<set-variable value="#[now()]" doc:name="currTime" doc:id="fbb90e4d-2c79-42c8-930c-463b6a5a3319" variableName="currTime" />
+		<set-variable value="#[message.headers.'color' default 'Blue']" doc:name="mascotColor" doc:id="663fa4e3-586a-433b-a2f4-31660ec0121d" variableName="mascotColor" />
+		<set-variable value="#[message.attributes.queryParams.'mascotName' default 'Maxine']" doc:name="mascotName" doc:id="6956b0ba-781c-448e-b7ca-1507f0b26fb1" variableName="mascotName" />
+	</sub-flow>
+	<sub-flow name="subflow-2" doc:id="42b728f9-5b6d-4ae0-8e34-fa960e844b18">
+		<set-payload value="#[output application/json 
+import dw::core::Strings
+---
+{
+	newGreeting: 'Hi ' ++ Strings::capitalize(message.payload.'fullName' as String default 'john doe') ++ ', ' ++ message.payload.'greeting' as String default 'Hello ',
+	mascotName: vars.mascotName,
+	mascotType: vars.mascotType,
+	mascotColor: vars.mascotColor,
+	currDate: vars.currTime as Date 
+}]" doc:name="Set Payload" doc:id="a34aa5cd-a930-4bb3-98d2-863edb968523" />
+	</sub-flow>
+	<flow name="subflow-3" doc:id="7327916c-7672-4450-9aec-c03997c48fea" >
+		<vm:listener doc:name="Listener - Recv from Q" doc:id="34e81c5f-8ea2-4ad8-9f1e-ac6d70036d87" config-ref="VM_Config" queueName="hello.world"/>
+		<set-payload value="#[output application/json ---
+{
+	updatedGreeting: upper('good bye')
+}]" doc:name="Set Payload" doc:id="49eefa68-e157-4834-b94e-d42507c0af11" />
+		<logger level="INFO" doc:name="Logger" doc:id="a294f86c-0418-450e-9f8c-3f3232c29c60" message="#[payload]"/>
+	</flow>
+</mule>

@@ -1,0 +1,36 @@
+# This file includes all properties used in development/local Environment
+
+# American Derby Database Properties
+american:
+  db:
+    url: 'jdbc:derby://localhost:1527/memory:training'
+    driver: 'org.apache.derby.jdbc.ClientDriver'
+    uid: 'APP'
+    pwd: 'junk'
+    
+    
+ # United Rest Service Properties
+#http://localhost:9090/united/flights
+
+united:
+  rest:
+    host: 'localhost'
+    port: '9090'
+    basepath: '/united'
+    path: '/flights'
+    
+
+#  Delta SOAP Service Properties [LOCAL]
+# http://localhost:9191/delta?wsdl
+delta:
+  soap:
+    wsdl: "http://localhost:9191/delta?wsdl"
+    service: "DeltaFlightsService"
+    port: "DeltaFlightsServiceImplPort"
+    address:  "http://localhost:9191/delta" 
+    
+
+# Supported destination codes
+destination:
+  codes: ['SFO', 'CLE', 'LAX', 'PDX', 'PDF', 'ALL']
+

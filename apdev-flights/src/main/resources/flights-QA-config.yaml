@@ -1,0 +1,33 @@
+# This file contains all properties used in QA/SANDBOX Environment
+
+# American Derby Database Properties
+american:
+  db:
+    url: 'jdbc:mysql://iltdb.learn.mulesoft.com:3306/training'
+    driver: 'com.mysql.cj.jdbc.Driver'
+    uid: 'mule'
+    pwd: 'mule'
+    
+    
+# United Rest Service Properties
+#http://ilt.learn.mulesoft.com/united/flights
+
+united:
+  rest:
+    host: 'ilt.learn.mulesoft.com'
+    port: '80'
+    basepath: '/united'
+    path: '/flights'
+    
+
+# Delta SOAP Service Properties
+delta:
+  soap:
+    wsdl: 'http://ilt.learn.mulesoft.com/delta?wsdl'
+    service: 'TicketServiceService'
+    port: 'TicketServicePort'
+    address: 'http://ilt.learn.mulesoft.com/delta'
+    
+# Supported destination codes
+destination:
+  codes: ['SFO', 'CLE', 'LAX', 'PDX', 'PDF', 'ALL']

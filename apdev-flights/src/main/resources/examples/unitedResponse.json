@@ -1,0 +1,24 @@
+{
+    "flights": [
+        {
+            "code": "ER9fje",
+            "price": 845,
+            "origin": "MUA",
+            "destination": "CLE",
+            "departureDate": "2015/07/11",
+            "planeType": "Boeing 727",
+            "airlineName": "United",
+            "emptySeats": 32
+        },
+        {
+            "code": "ER3kfd",
+            "price": 245,
+            "origin": "MUA",
+            "destination": "CLE",
+            "departureDate": "2015/08/11",
+            "planeType": "Boeing 747",
+            "airlineName": "United",
+            "emptySeats": 13
+        }
+    ]
+}

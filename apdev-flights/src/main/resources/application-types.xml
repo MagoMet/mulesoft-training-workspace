@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="unitedResponse_json" format="json">
+      <types:shape format="weave" example="examples/unitedResponse.json"><![CDATA[%dw 2.0
+type unitedResponse_json = {|
+  flights: Array<{|
+    code: String, 
+    price: Number {"typeId": "int"}, 
+    origin: String, 
+    destination: String, 
+    departureDate: String, 
+    planeType: String, 
+    airlineName: String, 
+    emptySeats: Number {"typeId": "int"}
+  |}>
+|} {"MetadataFormat": "json",
+"example": "{\"flights\":[{\"code\":\"ER9fje\",\"price\":845,\"origin\":\"MUA\",\"destination\":\"CLE\",\"departureDate\":\"2015\/07\/11\",\"planeType\":\"Boeing 727\",\"airlineName\":\"United\",\"emptySeats\":32},{\"code\":\"ER3kfd\",\"price\":245,\"origin\":\"MUA\",\"destination\":\"CLE\",\"departureDate\":\"2015\/08\/11\",\"planeType\":\"Boeing 747\",\"airlineName\":\"United\",\"emptySeats\":13}]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="finalFlightResponse_json" format="json">
+      <types:shape format="weave" example="examples/finalFlightsResponse.json"><![CDATA[%dw 2.0
+type finalFlightResponse_json = Array<{|
+  ID: String, 
+  airline: String, 
+  flightCode: String, 
+  fromAirportCode: String, 
+  toAirportCode: String, 
+  departureDate: String, 
+  emptySeats: Number {"typeId": "int"}, 
+  totalSeats: Number {"typeId": "int"}, 
+  price: Number {"typeId": "int"}, 
+  planeType: String
+|}> {"MetadataFormat": "json",
+"example": "[{\"ID\":\"AA-123\",\"airline\":\"American Airlines\",\"flightCode\":\"ER0945\",\"fromAirportCode\":\"PDX\",\"toAirportCode\":\"CLE\",\"departureDate\":\"June 1, 2016\",\"emptySeats\":24,\"totalSeats\":350,\"price\":450,\"planeType\":\"Boeing 747\"},{\"ID\":\"AA-777\",\"airline\":\"American Airlines\",\"flightCode\":\"ER0945\",\"fromAirportCode\":\"PDX\",\"toAirportCode\":\"CLE\",\"departureDate\":\"June 1, 2016\",\"emptySeats\":24,\"totalSeats\":350,\"price\":450,\"planeType\":\"Boeing 747\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#aa01a7aa-c880-4b2d-95b6-ec5f4d9b7aa5">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="unitedResponse_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#b01a9bae-dfa4-44db-bb21-b6e8798ea049">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="finalFlightResponse_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0c5836ca-e41b-43fa-887e-6c148b48df0c">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="finalFlightResponse_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#e7236f1a-1b3b-4ff8-96ed-e6510ba1e174">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="finalFlightResponse_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#1b01c5fb-a6e7-497f-853a-3b4dcc7bee80">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="finalFlightResponse_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
